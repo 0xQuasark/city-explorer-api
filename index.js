@@ -18,21 +18,17 @@ class Forecast {
   }
 }
 
-
 function generateData(city, lat, lon) {
   let forecastData = [];
   let cityData = weatherData.find(item => item.city_name === city);
-  
+
   for (let key in cityData.data) {
-    // console.log(key);
     let newDateTime = cityData.data[key].datetime;
     
     let cloudState = cityData.data[key].weather.description;
     let lowTemp = cityData.data[key].low_temp;
     let highTemp = cityData.data[key].max_temp;
     let newDescription = `Low of ${lowTemp}, high of ${highTemp} with ${cloudState}`;
-
-    // "description": "Low of 17.1, high of 23.6 with broken clouds",
 
     forecastData.push(new Forecast(newDescription, newDateTime));
   }
@@ -41,8 +37,8 @@ function generateData(city, lat, lon) {
 
 app.get('/weather', (request, response) => {
   // console.log('Weather parameters', request);
-  if (!request.query.city || !request.query.lon || !request.query.lat) {
-    response.status(400).send('WEATHER: Bad Request: ');
+  if (!request.query.city || !request.query.lat || !request.query.lon) {
+    response.status(400).send('Not enough parameters given');
   } else {
     const cityData = generateData(request.query.city, request.query.lat, request.query.lon);
     response.status(200).send(cityData);

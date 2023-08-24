@@ -73,7 +73,10 @@ app.get('/weather', async (request, response) => {
 function formatMovieData(movieData) {
   const movieList = [];
 
-  for (let i=0; i<movieData.length; i++){
+  let numMovies = movieData.length < 10 ? movieData.length : 10;
+  
+
+  for (let i=0; i < numMovies; i++){
     if (movieData[i].poster_path) {
       let id = movieData[i].id;
       let title = movieData[i].title;

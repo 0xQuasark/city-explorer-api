@@ -86,6 +86,9 @@ function formatMovieData(movieData) {
       movieList.push(new Movie(id, title, overview, averageVotes, totalVotes, imageUrl, popularity, releasedOn));
     }
   }
+
+  movieList.sort((a, b) => b.popularity - a.popularity);
+  
   return movieList;
 }
 
@@ -105,7 +108,7 @@ app.get('/movies', async (request, response) => {
 
 
 app.listen(PORT, () => {
-  console.log('Pauls App is listening!!');
+  console.log('Pauls App is listening...');
 });
 
 

@@ -51,7 +51,6 @@ function formatWeatherForecast(weather) {
     const highTemp = weather.data[i].min_temp;
     
     const desc = `Low of ${lowTemp}, high of ${highTemp} with ${cloudState}`;
-    console.log(datetime, desc)
 
     forecastData.push(new Forecast(desc, datetime))
   }

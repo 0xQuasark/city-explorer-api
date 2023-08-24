@@ -63,9 +63,9 @@ app.get('/weather', async (request, response) => {
   if (!request.query.city || !request.query.lat || !request.query.lon) {
     response.status(400).send('Not enough parameters given');
   } else {
-    // let weatherData = await getWeatherForecast(request.query.lat, request.query.lon);
-    // let formattedWeatherForecast = formatWeatherForecast(weatherData);
-    let formattedWeatherForecast = new Forecast('uncomment', 'the above two lines');
+    let weatherData = await getWeatherForecast(request.query.lat, request.query.lon);
+    let formattedWeatherForecast = formatWeatherForecast(weatherData);
+    // let formattedWeatherForecast = new Forecast('uncomment', 'the above two lines');
     response.status(200).send(formattedWeatherForecast);
   }
 });

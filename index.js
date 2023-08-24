@@ -1,5 +1,5 @@
 'use strict';
-const dotenv = require('dotenv');
+const dotenv = require('dotenv'); // put this thing first, certainly before I 
 const express = require('express'); // built in function for code running in the Node runtime.
 const cors = require('cors');
 const axios = require('axios');

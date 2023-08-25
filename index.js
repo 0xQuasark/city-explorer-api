@@ -1,4 +1,5 @@
 'use strict';
+// const cache = require('./cache.js');
 const dotenv = require('dotenv').config(); // put this thing first, certainly before I 
 const express = require('express'); // built in function for code running in the Node runtime.
 const cors = require('cors');
@@ -14,7 +15,8 @@ app.use(cors()); // activates cross-origin-resource-sharing. allow other origins
 
 app.get('/weather', handleWeatherRequest);
 app.get('/movies', handleMovieRequest);
-
+// console.log(cache.weatherCache);
+// console.log(cache.movieCache);
 
 app.listen(PORT, () => {
   console.log('Pauls App (v3.1) is listening...');

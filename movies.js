@@ -4,7 +4,6 @@ const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
 
 const axios = require('axios');
 
-
 function Movie(id, title, overview, averageVotes, totalVotes, imageUrl, popularity, releasedOn) {
   this.id = id;
   this.title = title;
@@ -21,8 +20,8 @@ function formatMovieData(movieData) {
 
   let numMovies = movieData.length < 10 ? movieData.length : 10;
   
-
   for (let i=0; i < numMovies; i++){
+    // I only want responses with posters
     if (movieData[i].poster_path) {
       let id = movieData[i].id;
       let title = movieData[i].title;
@@ -43,7 +42,7 @@ function formatMovieData(movieData) {
 
 
 const handleMovieRequest = async (request, response) => {
-  console.log('movie refactor completed?');
+  console.log('Movie Request for ', request.query);
   let cityName = request.query.cityName;
   const tmdbURL = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${MOVIE_API_KEY}`;
 

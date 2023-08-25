@@ -35,7 +35,7 @@ function formatWeatherForecast(weather) {
 }
   
 const handleWeatherRequest = async (request, response) => {
-  // console.log('you did well!');
+  console.log('Weather Request for', request.query);
   if (!request.query.city || !request.query.lat || !request.query.lon) {
     response.status(400).send('Not enough parameters given');
   } else {

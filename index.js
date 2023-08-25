@@ -19,7 +19,7 @@ app.get('/movies', handleMovieRequest);
 // console.log(cache.movieCache);
 
 app.listen(PORT, () => {
-  console.log('Pauls App (v3.1) is listening...');
+  console.log('Pauls App (v3.1) is listening..');
 });
 
 

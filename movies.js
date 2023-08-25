@@ -1,8 +1,10 @@
 'use strict';
 const dotenv = require('dotenv').config(); // put this thing first, certainly before I 
+const cache = require('./cache.js');
+const axios = require('axios');
+
 const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
 
-const axios = require('axios');
 
 function Movie(id, title, overview, averageVotes, totalVotes, imageUrl, popularity, releasedOn) {
   this.id = id;
@@ -40,15 +42,38 @@ function formatMovieData(movieData) {
   return movieList;
 }
 
-
-const handleMovieRequest = async (request, response) => {
-  console.log('Movie Request for ', request.query);
-  let cityName = request.query.cityName;
+async function getMovieData(cityName) {
+  const key = cityName;
   const tmdbURL = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${MOVIE_API_KEY}`;
 
+  if (cache[key] && (Date.now() - cache[key].timestamp < 5000000)) {
+    console.log('MOVIE: Cache hit');
+  } else {
+    console.log('MOVIE: Cache miss');
+    cache[key] = {};
+    cache[key].timestamp = Date.now();
+    let rawMovieData = await axios.get(tmdbURL);
+    // console.log('raw movieData', rawMovieData.data);
+    cache[key].data = rawMovieData.data;
+  }
+  // console.log(cache[key].data);
+  // console.log('Datestamp: ', Date.now());
+  // console.log('cached timestamp: ', cache[key].timestamp);
+  // console.log('L62: ', cache[key].data.results)
+  return cache[key].data.results;
+}
+
+
+const handleMovieRequest = async (request, response) => {
+  // console.log('Movie Request for ', request.query);
+  // console.log('Movie Cache: ' + cache.weatherCache);
+  let cityName = request.query.cityName;
+
   try {
-    const rawMovieData = await axios.get(tmdbURL);
-    let formattedMovies = formatMovieData(rawMovieData.data.results);
+    const rawMovieData = await getMovieData(cityName);
+    // console.log('raw: ', rawMovieData)
+    let formattedMovies = formatMovieData(rawMovieData);
+    // console.log('formatted: ', formattedMovies)
     response.status(200).send(formattedMovies);
   } catch (e) {
     response.status(500).send(`Ugh Oh ${e}`);

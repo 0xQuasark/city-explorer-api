@@ -1,9 +1,9 @@
 'use strict';
 const dotenv = require('dotenv').config(); // put this thing first, certainly before I 
+const cache = require('./cache.js');
+const axios = require('axios');
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
-
-const axios = require('axios');
 
 class Forecast {
   constructor(description, date) {
@@ -13,9 +13,25 @@ class Forecast {
 }
 
 async function getWeatherForecast(lat, lon) {
-  const weatherEndpoint = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}&units=I&days=7`;
-  let weatherResponse = await axios.get(`${weatherEndpoint}`);
-  return weatherResponse.data;
+  const key = 'weather-' + lat + lon;
+  const weatherEndpoint = `http://api.weatherbit.io/v2.0/forecast/daily/?key=${WEATHER_API_KEY}&lang=en&lat=${lat}&lon=${lon}&days=5`;
+  // const weatherEndpoint = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}&units=I&days=7`;
+
+  
+  if (cache[key] && (Date.now() - cache[key].timestamp < 5000000)) {
+    console.log('WEATHER: Cache hit');
+  } else {
+    console.log('WEATHER: Cache miss');
+    cache[key] = {};
+    cache[key].timestamp = Date.now();
+    let rawWeatherData = await axios.get(weatherEndpoint);
+    cache[key].data = rawWeatherData.data;
+  }
+  // console.log(cache[key].data);
+  // console.log('Datestamp: ', Date.now());
+  // console.log('cached timestamp: ', cache[key].timestamp);
+
+  return cache[key].data;
 }
 
 function formatWeatherForecast(weather) {
@@ -35,7 +51,8 @@ function formatWeatherForecast(weather) {
 }
   
 const handleWeatherRequest = async (request, response) => {
-  console.log('Weather Request for', request.query);
+  // console.log('Weather Request for', request.query);
+  // console.log('Movie Cache: ' + cache.movieCache);
   if (!request.query.city || !request.query.lat || !request.query.lon) {
     response.status(400).send('Not enough parameters given');
   } else {
